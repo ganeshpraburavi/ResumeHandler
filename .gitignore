@@ -1,0 +1,11 @@
+target/
+.idea*/
+build/
+.gradle
+gradle/
+
+*.jar
+*.bat
+
+gradlew
+

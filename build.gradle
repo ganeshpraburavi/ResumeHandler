@@ -1,0 +1,23 @@
+group 'StudentWorker'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+
+mainClassName = 'resumeuploader.ResumeUploader'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'com.google.apis:google-api-services-drive:v2-rev194-1.21.0'
+    compile 'com.google.api-client:google-api-client:1.20.0'
+    compile 'com.google.oauth-client:google-oauth-client-jetty:1.20.0'
+    compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.48.2'
+}
