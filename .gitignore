@@ -5,7 +5,5 @@ build/
 gradle/
 
 *.jar
-*.bat
 
-gradlew
 
