@@ -14,6 +14,9 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.*;
+
+import resumeuploader.database.PersistFileURL;
+
 import com.google.api.services.drive.Drive;
 
 import java.io.IOException;
@@ -65,33 +68,41 @@ public class GoogleDriveUploader implements Uploader {
     private File insertFile(Drive service, String title, String description,
                             String parentId, String mimeType, String filename) {
         File body = new File();
-        body.setTitle(title);
+        java.io.File fileContent = new java.io.File(filename);
+        String name = fileContent.getName();
+        String asset_key = name.replaceFirst("[.][^.]+$", "");
+
+        body.setTitle(asset_key+".pdf");
         body.setDescription(description);
         body.setMimeType(mimeType);
-
         if (parentId != null && parentId.length() > 0) {
             body.setParents(
                     Arrays.asList(new ParentReference().setId(parentId)));
         }
 
-        java.io.File fileContent = new java.io.File(filename);
+        
+        
+        
         FileContent mediaContent = new FileContent(mimeType, fileContent);
         try {
             File file = service.files().insert(body, mediaContent).execute();
-
+            
             file.setShareable(true);
 
             System.out.println("File ID that should be associated with the student: " + file.getId());
 
             Permission permissionToPrabu = new Permission();
 
-            permissionToPrabu.setValue("satheeshravir@gmail.com");
-            permissionToPrabu.setType("user");
-            permissionToPrabu.setRole("writer");
+            permissionToPrabu.setValue("me");
+            permissionToPrabu.setType("anyone");
+            permissionToPrabu.setRole("reader");
 
             service.permissions().insert(file.getId(),permissionToPrabu).execute();
             System.out.println("Shareable link to give for your professor: " + file.getAlternateLink());
-
+            PersistFileURL persistURL = new PersistFileURL();
+            persistURL.save(asset_key, file.getAlternateLink());
+            System.out.println("Saved "+asset_key+" to database");
+            fileContent.delete();
             return file;
         } catch (IOException e) {
             System.out.println("An error occured: " + e);

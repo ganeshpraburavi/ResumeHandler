@@ -4,6 +4,9 @@ import resumeuploader.uploader.Uploader;
 import resumeuploader.watcher.ResumeDirectoryWatcher;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.regex.Pattern;
+
+import com.sun.org.apache.xerces.internal.impl.xs.identity.Selector.Matcher;
 
 public class ResumeUploader {
 

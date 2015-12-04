@@ -10,6 +10,18 @@ mainClassName = 'resumeuploader.ResumeUploader'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'resumeuploader.ResumeUploader'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 repositories {
     mavenCentral()
 }
@@ -20,4 +32,6 @@ dependencies {
     compile 'com.google.api-client:google-api-client:1.20.0'
     compile 'com.google.oauth-client:google-oauth-client-jetty:1.20.0'
     compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.48.2'
+    compile 'mysql:mysql-connector-java:5.1.6'
+    
 }
