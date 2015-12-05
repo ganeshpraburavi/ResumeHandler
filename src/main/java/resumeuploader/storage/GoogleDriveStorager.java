@@ -1,4 +1,4 @@
-package resumeuploader.uploader;
+package resumeuploader.storage;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -11,12 +11,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
-
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.*;
-
-import resumeuploader.database.PersistFileURL;
-
 import com.google.api.services.drive.Drive;
 
 import java.io.IOException;
@@ -27,11 +23,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
-public class GoogleDriveUploader implements Uploader {
+import resumeuploader.database.PersistFileURL;
+
+public class GoogleDriveStorager implements Storager {
 
     private final String APPLICATION_NAME = "Student Worker";
     private final java.io.File DATA_STORE_DIR = new java.io.File(
-            System.getProperty("user.home"), ".credentials/GoogleDriveUploader");
+            System.getProperty("user.home"), ".credentials/GoogleDriveStorager");
     private FileDataStoreFactory DATA_STORE_FACTORY;
     private final JsonFactory JSON_FACTORY =
             JacksonFactory.getDefaultInstance();
@@ -42,7 +40,7 @@ public class GoogleDriveUploader implements Uploader {
     private String googleDrivePropertyFileName = "google_drive_uploader.properties";
 
 
-    public GoogleDriveUploader() throws IOException {
+    public GoogleDriveStorager() throws IOException {
         googleDriveProperties = new Properties();
 
         try {
@@ -112,7 +110,7 @@ public class GoogleDriveUploader implements Uploader {
 
     public Credential authorize() throws IOException {
         InputStream in =
-                GoogleDriveUploader.class.getResourceAsStream("/client_secret.json");
+                GoogleDriveStorager.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
@@ -152,7 +150,7 @@ public class GoogleDriveUploader implements Uploader {
         }
     }
 
-    public Boolean uploadFile(String path) {
+    public Boolean storeFile(String path) {
         Long fileName = Math.abs(new Random().nextLong());
 
         if(insertFile(service, fileName+".pdf","" , "", "", path) != null)
